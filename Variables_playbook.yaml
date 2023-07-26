@@ -1,7 +1,7 @@
 # download_link zip_file_name: extracted_dir
 ---
 - name: This sets up an httpd server
-  hosts: ip
+  hosts: 
   vars: 
     download_link: addthelink
     zip_file_name: name.zip
