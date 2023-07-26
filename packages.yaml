@@ -1,0 +1,5 @@
+---
+- package1: httpd
+  package2: net-tools
+  package3: unzip
+  package4: firewalld
