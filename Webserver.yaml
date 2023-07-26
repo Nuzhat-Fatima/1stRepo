@@ -1,13 +1,13 @@
 ---
 - name: This sets up an httpd server
-  hosts: ip
+  hosts: 44.203.74.41
+  gather_facts: false
   tasks: 
   - name: Install Apache Package
     yum: 
       name: 
       - httpd
       - firewalld
-    
   - name: Ensure default apache port is 8080
     lineinfile: 
       path: /etc/httpd/conf/httpd.conf
@@ -26,26 +26,26 @@
   - name: Ensure firewalld is running
     service: 
       name: firewalld
-      state: running
+      state: started
   - name: Add firewall rule to port 8080
     firewalld:
       port: 8080/tcp
+      state: enabled
       permanent: yes
-      zone: public
       immediate: yes
   - name: Download web content
-    get-url: 
-      url: 
+    get_url: 
+      url: https://www.free-css.com/assets/files/free-css-templates/download/page294/rent4u.zip
       dest: /var/www/html
   - name: extract the downloaded zip file 
-    unarchieve: 
-      src: /var/www/html/*name
+    unarchive: 
+      src: /var/www/html/rent4u.zip
       dest: /var/www/html
       remote_src: yes
   - name: Delete zip file
     command:
-      cmd: rm -f /var/www/html/*name.zip
+      cmd: rm -f /var/www/html/rent4u.zip
   - name: Move files to webroot
     shell:
-      cmd: mv /var/www/html/xyz-html* /var/www/html
+      cmd: mv /var/www/html/rent4u-html/* /var/www/html
         

@@ -1,10 +1,10 @@
 ---
 - name: Delete user annd group
-  hosts: ip
+  hosts: 44.203.74.41
   tasks:
   - name: Delete user
     user:
-      name: anonymous
+      name: anyone
       state: absent
       remove: yes 
   - name:  Delete group

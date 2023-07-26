@@ -1,15 +1,15 @@
 ---
 - name: User management
-  hosts: ip
+  hosts: 44.203.74.41
   tasks:
   - name: Add User
     user:
       name: anonymous
       comment: test user
-      uid: 104
-      group: admin
+      uid: 107
+      group: team
       shell: /bin/bash
   - name: Add a group
     group:
-      name: team
+      name: anonymous
       state: present
