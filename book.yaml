@@ -1,9 +1,0 @@
----
-- name: user add
-  hosts: all
-  tasks:
-    - name: add user
-      user:
-        name: salai
-        uid:
-        group:

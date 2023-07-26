@@ -1,0 +1,15 @@
+---
+- name: User management
+  hosts: ip
+  tasks:
+  - name: Add User
+    user:
+      name: anonymous
+      comment: test user
+      uid: 104
+      group: admin
+      shell: /bin/bash
+  - name: Add a group
+    group:
+      name: team
+      state: present

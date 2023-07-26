@@ -1,0 +1,51 @@
+---
+- name: This sets up an httpd server
+  hosts: ip
+  tasks: 
+  - name: Install Apache Package
+    yum: 
+      name: 
+      - httpd
+      - firewalld
+    
+  - name: Ensure default apache port is 8080
+    lineinfile: 
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^Listen '
+      insertafter: '^#Listen '
+      line: Listen 8080
+  - name: Ensure httpd is running and enable
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+  - name: Put SELinux in permissive mode
+    selinux:
+      policy: targeted
+      state: permissive
+  - name: Ensure firewalld is running
+    service: 
+      name: firewalld
+      state: running
+  - name: Add firewall rule to port 8080
+    firewalld:
+      port: 8080/tcp
+      permanent: yes
+      zone: public
+      immediate: yes
+  - name: Download web content
+    get-url: 
+      url: 
+      dest: /var/www/html
+  - name: extract the downloaded zip file 
+    unarchieve: 
+      src: /var/www/html/*name
+      dest: /var/www/html
+      remote_src: yes
+  - name: Delete zip file
+    command:
+      cmd: rm -f /var/www/html/*name.zip
+  - name: Move files to webroot
+    shell:
+      cmd: mv /var/www/html/xyz-html* /var/www/html
+        

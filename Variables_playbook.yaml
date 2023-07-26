@@ -1,0 +1,55 @@
+# download_link zip_file_name: extracted_dir
+---
+- name: This sets up an httpd server
+  hosts: ip
+  vars: 
+    download_link: addthelink
+    zip_file_name: name.zip
+    extracted_dir: name_template
+  tasks: 
+  - name: Install Apache Package
+    yum: 
+      name: 
+      - httpd
+      - firewalld
+    
+  - name: Ensure default apache port is 8080
+    lineinfile: 
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^Listen '
+      insertafter: '^#Listen '
+      line: Listen 8080
+  - name: Ensure httpd is running and enable
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+  - name: Put SELinux in permissive mode
+    selinux:
+      policy: targeted
+      state: permissive
+  - name: Ensure firewalld is running
+    service: 
+      name: firewalld
+      state: running
+  - name: Add firewall rule to port 8080
+    firewalld:
+      port: 8080/tcp
+      permanent: yes
+      zone: public
+      immediate: yes
+  - name: Download web content
+    get-url: 
+      url: "{{download_link}}"
+      dest: /var/www/html
+  - name: extract the downloaded {{zip_file_name}}
+    unarchieve: 
+      src: /var/www/html/{{zip_file_name}}
+      dest: /var/www/html
+      remote_src: yes
+  - name: Delete {{zip_file_name}}
+    command:
+      cmd: rm -f /var/www/html/{{zip_file_name}}
+  - name: Move files to webroot
+    shell:
+      cmd: mv /var/www/html/xyz-html/{{extracted_dir}} /var/www/html

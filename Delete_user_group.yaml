@@ -1,0 +1,13 @@
+---
+- name: Delete user annd group
+  hosts: ip
+  tasks:
+  - name: Delete user
+    user:
+      name: anonymous
+      state: absent
+      remove: yes 
+  - name:  Delete group
+    group:
+      name: team
+      state: absent
