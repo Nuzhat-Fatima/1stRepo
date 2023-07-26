@@ -1,6 +1,6 @@
 ---
 - name: Delete user annd group
-  hosts: 44.203.74.41
+  hosts: ip
   tasks:
   - name: Delete user
     user:
