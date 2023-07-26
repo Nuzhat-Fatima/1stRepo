@@ -1,0 +1,68 @@
+- name: This sets up an httpd webserver
+  hosts: 44.202.44.178
+  vars_files:
+  - vars/setup-website.yaml
+  - vars/packages.yaml
+   tasks:
+   - name: install "{{package1 }}", "{{ package2 }}", "{{ package3 }}" and "{{ package4 }}"
+     yum:
+      name:
+      - "{{ package1 }}"
+      - "{{ package2 }}"
+      - "{{ package3 }}"
+      - "{{ package4 }}"
+  - name: clean webroot
+    shell: /bin/rm -rf /var/www/html/*
+  - name: Install apache package
+    yum:
+      name:
+      -  httpd
+      - firewalld
+      - unzip
+      state: latest
+  - name: Ensure the default apache port is 8080
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^Listen '
+      insertafter: '^#Listen '
+      line: Listen 8080
+    register: abc
+  - name: debug last ran task
+    debug:
+      var: abc
+  - name: Ensure httpd is running and enable
+    systemd:
+      name: httpd
+      state: started
+      enabled: yes
+  - name: Put SElinux in permissive mode
+    selinux:
+      policy: targeted
+      state: permissive
+  - name: Ensure firewalld is running
+    service:
+      name: firewalld
+      state: started
+  - name: adding firewall rule 8080
+    firewalld:
+      port: 8080/tcp
+      permanent: yes
+      state: enabled
+      immediate: yes
+  - name: clean webroot
+    shell: /bin/rm -rf /var/www/html/*
+  - name: Download web content
+    get_url:
+      url: "{{ download_link }}"
+      dest: /var/www/html
+  - name: Extract download data
+    unarchive:
+      src: /var/www/html/{{ zip_file_name }}
+      dest: /var/www/html
+      remote_src: yes
+  - name: delete the {{ zip_file_name }} file
+    command:
+      cmd: rm -rf /var/www/html/{{ zip_file_name }}
+  - name: move website files to webroot
+    shell:
+      cmd: mv /var/www/html/{{ extracted_dir }}/* /var/www/html  
