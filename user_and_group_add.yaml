@@ -1,6 +1,6 @@
 ---
 - name: User management
-  hosts: 44.203.74.41
+  hosts: ip
   tasks:
   - name: Add User
     user:
